@@ -1,0 +1,1 @@
+export const tokenCookieName = 'web3-user-token'

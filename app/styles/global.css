@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    position: relative;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    word-break: break-word;
+  }
+
+  *[class*="hover:"] {
+    transition: color .4s, background-color .4s, left .4s, opacity .4s, transform .4s;
+  }
+
+  .left-anim {
+    transition: left .4s, opacity .4s;
+  }
+
+  *[class^="left"] {
+    transition: color .2s;
+  }
+
+  *:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+  }
+
+  html {
+    background-color: #EFF6FC;
+  }
+
+  body {
+    @apply text-black bg-light-blue text-base font-normal max-w-[2200px] mx-auto min-h-[100vh] flex flex-col
+  }
+
+  /* Custom Scroll bar */
+  ::-webkit-scrollbar {
+    width: .3rem;
+    height: .3rem;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #EFF6FC;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #000000ac;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #000;
+  }
+
+  /* Custom Scroll bar END */
+
+  input,
+  textarea {
+    outline: 0 none;
+    background: transparent;
+  }
+
+  *::placeholder {
+    opacity: .38;
+    color: #fff;
+  }
+
+  img {
+    object-fit: contain;
+  }
+}
+
+@layer components {
+  @keyframes shake {
+
+    10%,
+    90% {
+      transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+      transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+      transform: translate3d(-2px, 0, 0);
+    }
+
+    40%,
+    60% {
+      transform: translate3d(2px, 0, 0);
+    }
+  }
+
+  .shake-button:hover,.shake:hover {
+    animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+    transform: translate3d(0, 0, 0);
+    perspective: 1000px;
+  }
+
+  @keyframes skeleton-loading {
+    0% {
+      background-color: hsl(200, 20%, 80%);
+    }
+
+    100% {
+      background-color: hsl(200, 20%, 95%);
+    }
+  }
+
+  .skeleton {
+    animation: skeleton-loading 1s linear infinite alternate;
+  }
+}
