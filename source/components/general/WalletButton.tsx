@@ -5,7 +5,7 @@ import { setWalletShowModal } from '@/source/store/slice/walletSlice'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { FaCaretDown, FaCaretUp, FaCopy } from "react-icons/fa";
+import { FaCaretDown, FaCaretUp, FaCopy, FaTimes } from "react-icons/fa";
 import { Oval } from 'react-loader-spinner'
 
 const WalletButton = () => {
@@ -21,8 +21,8 @@ const WalletButton = () => {
     toast.success("Address copied to clipboard")
     setShowWalletDropDown(false)
   }
-  const handleDisconnect = () => {
-    disconnect()
+  const handleDisconnect = async () => {
+    await disconnect()
     setShowWalletDropDown(false)
   }
 
@@ -42,7 +42,10 @@ const WalletButton = () => {
           <button className="py-1.5 sm:py-2 px-2.5 sm:px-4 hover:bg-light-blue-hover w-full overflow-hidden overflow-ellipsis break-keep text-left" onClick={handleDisconnect}>Disconnect</button>
         </div>}
       </div>}
-      {(disconnecting || connecting) && <div className="py-2 sm:py-2.5 px-8 sm:px-14 bg-dark-blue text-white rounded-md cursor-wait" onClick={handleButtonClick}><Oval width={20} height={20} color='white' /></div>}
+      {(disconnecting || connecting) && <div className="py-2 sm:py-2.5 px-8 sm:px-14 bg-dark-blue text-white rounded-md cursor-wait">
+        <Oval width={20} height={20} color='white' />
+        <button className="absolute inset-0 left-auto text-[white] shake flex items-center justify-center px-2 text-xl" onClick={handleDisconnect}><FaTimes /></button>
+      </div>}
     </>
   )
 }
