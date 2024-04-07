@@ -15,7 +15,7 @@ const AppProvider = ({ children }: { children: ReactNode }) => {
 	return (
 		<Provider store={store}>
 			<ConnectionProvider endpoint={endpoint}>
-				<WalletProvider wallets={wallets}>
+				<WalletProvider wallets={wallets} autoConnect>
 					{children}
 					<Toaster position="bottom-right" reverseOrder={false} />
 					<FetchAppData />
