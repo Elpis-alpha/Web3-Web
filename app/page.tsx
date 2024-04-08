@@ -7,6 +7,7 @@ export default function Home() {
       <div className="flex flex-col gap-3 w-[80%] max-w-[300px]">
         <Link className="flex px-3 py-2 bg-light-blue-mid hover:bg-light-blue-hover shake justify-center rounded-md" href={"/p/ping-counter"}>Ping Counter</Link>
         <Link className="flex px-3 py-2 bg-light-blue-mid hover:bg-light-blue-hover shake justify-center rounded-md" href={"/p/send-sol"}>Send SOL</Link>
+        <Link className="flex px-3 py-2 bg-light-blue-mid hover:bg-light-blue-hover shake justify-center rounded-md" href={"/p/movies"}>Movies</Link>
       </div>
     </main>
   );
