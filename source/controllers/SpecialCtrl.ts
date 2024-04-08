@@ -308,3 +308,26 @@ export const validatePassword = (password: string) => {
   else if (password.search(/[0-9]/) < 0) return "Minimum of one number."
   else return ""
 }
+
+export const errorHandler: (error: any, defaultString?: string) => string = (error, defaultString = "An error occured") => {
+  let errorString = '';
+
+  if (typeof error === 'string') {
+    errorString = error;
+  } else if (error instanceof Error && typeof error.message === "string") {
+    errorString = error.message;
+  } else {
+    errorString = defaultString;
+  }
+
+  // write code to check if error is a readable text
+  if (errorString.length < 1 || errorString.startsWith('{') || errorString.startsWith('[' || errorString.length > 200)) {
+    errorString = defaultString;
+  } else if (errorString.includes('{"') || errorString.includes('["') || errorString.includes('"]') || errorString.includes('"}') || errorString.includes('":')) {
+    errorString = defaultString;
+  } else if (errorString.includes('Error:')) {
+    errorString = errorString.split('Error:')[1];
+  }
+  
+  return errorString
+}

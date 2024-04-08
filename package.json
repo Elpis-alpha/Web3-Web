@@ -11,6 +11,7 @@
     "postdeploy": "git push"
   },
   "dependencies": {
+    "@coral-xyz/borsh": "^0.29.0",
     "@reduxjs/toolkit": "^2.2.3",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-react": "^0.15.35",

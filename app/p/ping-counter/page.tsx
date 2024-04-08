@@ -1,4 +1,5 @@
 "use client";
+import { errorHandler } from "@/source/controllers/SpecialCtrl";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import * as web3 from "@solana/web3.js";
 import { useState } from "react";
@@ -32,12 +33,8 @@ export default function Home() {
       const signature = await sendTransaction(transaction, connection)
       setSuccessString(`https://explorer.solana.com/tx/${signature}?cluster=devnet`)
     } catch (error: any) {
-      if (typeof error?.message === 'string' && error?.message?.length > 0) {
-        toast.error(error.message)
-      } else {
-        console.log(error)
-        toast.error("An error occurred. Please try again.")
-      }
+      console.log(error)
+      toast.error(errorHandler(error.message));
     }
     setLoading(false)
   }
@@ -56,7 +53,7 @@ export default function Home() {
       {successString && <h3 className="font-bold text-2xl text-[#29a325]">Ping successful</h3>}
       {successString && <p className="">You can view the transaction on <a href={successString} target="_blank" rel="noopener noreferrer" className="text-dark-blue underline">Solana Explorer</a></p>}
       {successString && <button className="mx-auto -mt-2 flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-1.5 bg-white shake" onClick={handleReset}>
-        Reset
+        go back
       </button>}
     </main>
   );

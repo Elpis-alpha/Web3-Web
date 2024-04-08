@@ -12,7 +12,7 @@ const MovieReviewList = () => {
   return (
     <div className="flex flex-col w-full max-w-[500px] pt-10">
       <h2 className="text-xl font-semibold mb-4">Movie Reviews</h2>
-      {movies.map((movie) => <MovieReviewCard key={movie.title} {...movie} />)}
+      {movies.map((movie, i) => <MovieReviewCard key={movie.title + '-' + i} title={movie.title} rating={movie.rating} description={movie.description} />)}
     </div>
   )
 }

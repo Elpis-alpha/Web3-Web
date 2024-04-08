@@ -1,4 +1,5 @@
 "use client"
+import { errorHandler } from "@/source/controllers/SpecialCtrl";
 import { useAppDispatch, useAppSelector } from "@/source/store/hooks";
 import { setWalletShowModal } from "@/source/store/slice/walletSlice";
 import { useWallet } from "@solana/wallet-adapter-react"
@@ -33,12 +34,8 @@ const WalletConnectModal = () => {
                 setWalletIsConnecting(undefined)
                 closeWalletModal();
               } catch (error: any) {
-                if (typeof error?.message === 'string' && error?.message?.length > 0) {
-                  toast.error(error.message)
-                } else {
-                  console.log(error)
-                  toast.error("An error occurred while connecting wallet. Please try again.")
-                }
+                console.log(error)
+                toast.error(errorHandler(error.message, "An error occurred while connecting wallet. Please try again."));
                 setWalletIsConnecting(undefined)
               }
             }

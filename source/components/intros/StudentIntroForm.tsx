@@ -1,18 +1,17 @@
 "use client";
 import { errorHandler } from '@/source/controllers/SpecialCtrl';
-import { Movie } from '@/source/models/Movie';
+import { StudentIntro } from '@/source/models/StudentIntro';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import * as web3 from '@solana/web3.js';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { Oval } from 'react-loader-spinner';
 
-const MOVIE_REVIEW_PROGRAM_ID = 'CenYq6bDRB7p73EjsPEpiYN7uveyPUTdXkDkgUduboaN'
+const STUDENT_INTRO_PROGRAM_ID = 'HdE95RSVsdb315jfJtaykXhXY478h53X6okDupVfY9yf'
 
-const MovieReviewForm = () => {
-  const [title, setTitle] = useState('');
-  const [review, setReview] = useState('');
-  const [rating, setRating] = useState('');
+const StudentIntroForm = () => {
+  const [name, setName] = useState('');
+  const [message, setMessage] = useState('');
   const [processing, setProcessing] = useState(false)
 
   const { publicKey, sendTransaction } = useWallet()
@@ -20,23 +19,22 @@ const MovieReviewForm = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    if (!publicKey) return toast.error('Please connect your wallet to submit a review');
-    if (processing) return toast.error('Please wait for the previous review to complete');
+    if (!publicKey) return toast.error('Please connect your wallet to submit a message');
+    if (processing) return toast.error('Please wait for the previous message to complete');
 
-    if (title.trim().length < 1) return toast.error('Please enter a valid movie title');
-    if (review.trim().length < 1) return toast.error('Please enter a valid review title');
-    if (parseInt(rating) < 0 || parseInt(rating) > 5) return toast.error('Please enter a valid rating (0-5)');
+    if (name.trim().length < 1) return toast.error('Please enter a valid name');
+    if (message.trim().length < 1) return toast.error('Please enter a valid message');
 
     setProcessing(true)
 
     try {
-      const movie = new Movie(title, parseInt(rating), review);
-      const buffer = movie.serialize();
+      const intro = new StudentIntro(name, message);
+      const buffer = intro.serialize();
       const transaction = new web3.Transaction()
 
       const [pda] = web3.PublicKey.findProgramAddressSync(
-        [publicKey.toBuffer(), Buffer.from(movie.title)],
-        new web3.PublicKey(MOVIE_REVIEW_PROGRAM_ID)
+        [publicKey.toBuffer()],
+        new web3.PublicKey(STUDENT_INTRO_PROGRAM_ID)
       )
 
       const instruction = new web3.TransactionInstruction({
@@ -45,7 +43,7 @@ const MovieReviewForm = () => {
           { pubkey: pda, isSigner: false, isWritable: true },
           { pubkey: web3.SystemProgram.programId, isSigner: false, isWritable: false },
         ],
-        programId: new web3.PublicKey(MOVIE_REVIEW_PROGRAM_ID),
+        programId: new web3.PublicKey(STUDENT_INTRO_PROGRAM_ID),
         data: buffer
       })
 
@@ -53,7 +51,7 @@ const MovieReviewForm = () => {
 
       const txid = await sendTransaction(transaction, connection);
       toast.success(<p>
-        Review submitted successfully.&nbsp;
+        Introduction submitted successfully.&nbsp;
         <a className='underline text-dark-blue' href={`https://explorer.solana.com/tx/${txid}?cluster=devnet`} target="_blank" rel="noopener noreferrer">View Transaction</a>
       </p>);
     } catch (error: any) {
@@ -62,55 +60,41 @@ const MovieReviewForm = () => {
     }
 
     // Clear form fields
-    setTitle(''); setReview(''); setRating('');
+    setName(''); setMessage('');
     setProcessing(false)
   };
 
   return (
     <div className="w-full max-w-[500px]">
-      <h2 className="text-xl font-semibold mb-4">Write a Movie Review</h2>
+      <h2 className="text-xl font-semibold mb-4">Introduce yourself</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Movie Title:</label>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
           <input
             type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter movie title"
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter your name"
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-dark-blue"
             required
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="review" className="block text-sm font-medium text-gray-700 mb-1">Movie Review:</label>
+          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
           <textarea
-            id="review"
-            value={review}
-            onChange={(e) => setReview(e.target.value)}
-            placeholder="Write your review"
+            id="message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Write your message"
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-dark-blue"
             rows={5}
             required
           />
         </div>
-        <div className="mb-4">
-          <label htmlFor="rating" className="block text-sm font-medium text-gray-700 mb-1">Rating:</label>
-          <input
-            type="number"
-            id="rating"
-            value={rating}
-            onChange={(e) => setRating(e.target.value)}
-            placeholder="Enter rating (out of 5)"
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-dark-blue"
-            min={0}
-            max={5}
-            required
-          />
-        </div>
         <button type="submit" disabled={processing || !publicKey}
           className="bg-dark-blue text-white px-4 py-2 rounded-md hover:bg-dark-blue-hover focus:outline-none focus:ring focus:border-dark-blue flex items-center">
-          Submit Review
+          Submit Introduction
           {processing && <span className="ml-2">
             <Oval color="#fff" height={16} width={16} visible={processing} />
           </span>}
@@ -120,4 +104,4 @@ const MovieReviewForm = () => {
   );
 };
 
-export default MovieReviewForm;
+export default StudentIntroForm;
