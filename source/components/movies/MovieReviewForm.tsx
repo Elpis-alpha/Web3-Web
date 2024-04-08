@@ -18,7 +18,7 @@ const MovieReviewForm = () => {
   };
 
   return (
-    <div className="p-6 rounded-lg shadow-md w-full max-w-[500px]">
+    <div className="w-full max-w-[500px]">
       <h2 className="text-xl font-semibold mb-4">Write a Movie Review</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
