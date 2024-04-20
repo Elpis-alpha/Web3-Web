@@ -1,8 +1,8 @@
 "use client"
-import { Oval } from "react-loader-spinner";
+import { RingLoader } from "react-spinners";
 
 export default function Loading() {
 	return <main className="flex-1 flex flex-col items-center justify-center gap-5 p-5">
-		<Oval color='rgba(111, 0, 255, 0.6)' width={60} secondaryColor='rgba(111, 0, 255, 0.3)' />
+		<RingLoader color="rgba(111, 0, 255, 0.6)" size={"60px"} />
 	</main>
 }

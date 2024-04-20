@@ -6,7 +6,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { FaCaretDown, FaCaretUp, FaCopy, FaTimes } from "react-icons/fa";
-import { Oval } from 'react-loader-spinner'
+import { RingLoader } from 'react-spinners'
 
 const WalletButton = () => {
   const dispatch = useAppDispatch()
@@ -43,7 +43,7 @@ const WalletButton = () => {
         </div>}
       </div>}
       {(disconnecting || connecting) && <div className="py-2 sm:py-2.5 px-8 sm:px-14 bg-dark-blue text-white rounded-md cursor-wait">
-        <Oval width={20} height={20} color='white' />
+        <RingLoader color="white" size={"20px"} />
         <button className="absolute inset-0 left-auto text-[white] shake flex items-center justify-center px-2 text-xl" onClick={handleDisconnect}><FaTimes /></button>
       </div>}
     </>

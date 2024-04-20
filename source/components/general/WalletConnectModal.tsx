@@ -5,7 +5,7 @@ import { setWalletShowModal } from "@/source/store/slice/walletSlice";
 import { useWallet } from "@solana/wallet-adapter-react"
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Oval } from "react-loader-spinner";
+import { RingLoader } from "react-spinners";
 
 const WalletConnectModal = () => {
   const dispatch = useAppDispatch()
@@ -47,7 +47,7 @@ const WalletConnectModal = () => {
                 <p>{wallet.adapter.name}</p>
               </div>
               {(walletIsConnecting !== wallet.adapter.name) && <p className="text-sm opacity-60">{wallet.readyState}</p>}
-              {(walletIsConnecting === wallet.adapter.name) && <div className="w-6 h-6 p-0.5"><Oval width={20} height={20} color="black" /></div>}
+              {(walletIsConnecting === wallet.adapter.name) && <div className="w-6 h-6 p-0.5"><RingLoader color="black" size={"20px"} /></div>}
             </div>
           })}
 

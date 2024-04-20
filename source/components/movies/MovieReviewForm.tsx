@@ -5,7 +5,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import * as web3 from '@solana/web3.js';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { Oval } from 'react-loader-spinner';
+import { RingLoader } from 'react-spinners';
 
 const MOVIE_REVIEW_PROGRAM_ID = 'CenYq6bDRB7p73EjsPEpiYN7uveyPUTdXkDkgUduboaN'
 
@@ -112,7 +112,7 @@ const MovieReviewForm = () => {
           className="bg-dark-blue text-white px-4 py-2 rounded-md hover:bg-dark-blue-hover focus:outline-none focus:ring focus:border-dark-blue flex items-center">
           Submit Review
           {processing && <span className="ml-2">
-            <Oval color="#fff" height={16} width={16} visible={processing} />
+            <RingLoader color="white" size={"16px"} />
           </span>}
         </button>
       </form>

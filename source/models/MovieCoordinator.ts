@@ -25,9 +25,13 @@ export class MovieCoordinator {
     )
 
     accounts = accounts.filter(account => {
-      const length = account.account.data.readUInt32LE(0)
-      const data = account.account.data.slice(4, 4 + length).toString().trim()
-      return data.length > 0
+      try {
+        const length = account.account.data.readUInt32LE(0)
+        const data = account.account.data.slice(4, 4 + length).toString().trim()
+        return data.length > 0
+      } catch (error) {
+        return false
+      }
     })
 
     // @ts-ignore
