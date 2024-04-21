@@ -1,17 +1,16 @@
 "use client";
 import { errorHandler } from "@/source/controllers/SpecialCtrl";
-import { findOrCreateAssociatedTokenAccountForOthersTransaction, getTokenAccountWithMint, mintTokens } from "@/source/controllers/web3.helpers";
+import { burnTokensTransaction, findOrCreateAssociatedTokenAccountForOthersTransaction, getTokenAccountWithMint } from "@/source/controllers/web3.helpers";
 import { Mint } from "@solana/spl-token";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey, Transaction } from "@solana/web3.js";
+import { Transaction } from "@solana/web3.js";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { RingLoader } from "react-spinners";
 
-const MintTokens = ({ mint, goToBurn, goToTransfer }: { mint: Mint | undefined, goToBurn: Function, goToTransfer: Function }) => {
+const BurnTokens = ({ mint, goToTransfer, goToMint }: { mint: Mint | undefined, goToTransfer: Function, goToMint: Function }) => {
   const [amount, setAmount] = useState(0);
   const [processing, setProcessing] = useState(false);
-  const [reciever, setReciever] = useState("");
 
   const { publicKey, sendTransaction } = useWallet()
   const { connection } = useConnection()
@@ -28,33 +27,32 @@ const MintTokens = ({ mint, goToBurn, goToTransfer }: { mint: Mint | undefined, 
     setProcessing(true)
 
     try {
-      const destination = reciever ? new PublicKey(reciever) : publicKey;
-      const { accountInfo, associatedTokenAddress } = await getTokenAccountWithMint({ connection, publicAddress: destination, mint: mint });
+      const { accountInfo, associatedTokenAddress } = await getTokenAccountWithMint({ connection, publicAddress: publicKey, mint: mint });
 
       const transaction = new Transaction()
       if (!accountInfo) {
         console.log("Creating associated token account")
-        const { transaction: createAssociatedTokenAccountTransaction } = await findOrCreateAssociatedTokenAccountForOthersTransaction({ payer: publicKey, mint: mint, owner: destination });
+        const { transaction: createAssociatedTokenAccountTransaction } = await findOrCreateAssociatedTokenAccountForOthersTransaction({ payer: publicKey, mint: mint, owner: publicKey });
         transaction.add(createAssociatedTokenAccountTransaction)
       }
 
-      const mintTransaction = await mintTokens({ mint: mint.address, destination: associatedTokenAddress, authority: publicKey, amount: amount * 10 ** mint.decimals });
-      transaction.add(mintTransaction)
+      const burnTransaction = await burnTokensTransaction({ owner: publicKey, mint: mint.address, account: associatedTokenAddress, amount: amount * 10 ** mint.decimals });
+      transaction.add(burnTransaction)
 
       await sendTransaction(transaction, connection);
-      toast.success('Tokens minted successfully!');
+      toast.success('Tokens burnt successfully!');
     } catch (error: any) {
       console.log(error)
       toast.error(errorHandler(error.message));
     }
 
     // Clear form fields
-    setAmount(0); setReciever(""); setProcessing(false)
+    setAmount(0); setProcessing(false)
   }
 
   return (
     <div className="w-full max-w-[500px]">
-      <h2 className="text-xl font-semibold mb-4">Mint tokens</h2>
+      <h2 className="text-xl font-semibold mb-4">Burn tokens</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
@@ -64,36 +62,25 @@ const MintTokens = ({ mint, goToBurn, goToTransfer }: { mint: Mint | undefined, 
             value={amount === 0 ? "" : amount}
             min={1} max={100000}
             onChange={(e) => setAmount(parseInt(e.target.value))}
-            placeholder="Enter the amount of tokens to be minted e.g. 1000"
+            placeholder="Enter the amount of tokens to be burnt e.g. 1000"
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-dark-blue"
             required
           />
         </div>
-        <div className="mb-4">
-          <label htmlFor="reciever" className="block text-sm font-medium text-gray-700 mb-1">Reciever SOL address</label>
-          <input
-            type="string"
-            id="reciever"
-            value={reciever}
-            onChange={(e) => setReciever(e.target.value)}
-            placeholder="Leave empty to mint to your own address"
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-dark-blue"
-          />
-        </div>
         <button type="submit" disabled={processing}
           className="bg-dark-blue text-white px-4 py-2 rounded-md hover:bg-dark-blue-hover focus:outline-none focus:ring focus:border-dark-blue flex items-center">
-          Mint Tokens
+          Burn Tokens
           {processing && <span className="ml-2">
             <RingLoader color="white" size={"16px"} />
           </span>}
         </button>
       </form>
       <div className="flex gap-2 pt-3 items-center">
-        <button onClick={() => goToBurn()} className="text-sm text-dark-blue hover:underline">Burn tokens</button>
+        <button onClick={() => goToMint()} className="text-sm text-dark-blue hover:underline">Mint tokens</button>
         <div className="h-[1px] w-4 mt-0.5 bg-dark-blue"></div>
         <button onClick={() => goToTransfer()} className="text-sm text-dark-blue hover:underline">Transfer tokens</button>
       </div>
     </div>
   )
 }
-export default MintTokens
+export default BurnTokens

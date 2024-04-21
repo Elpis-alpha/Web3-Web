@@ -1,9 +1,11 @@
 "use client";
+import BurnTokens from "@/source/components/token-program/BurnTokens";
 import CreateMint from "@/source/components/token-program/CreateMint";
 import CreateTokenAccount from "@/source/components/token-program/CreateTokenAccount";
 import Loader from "@/source/components/token-program/Loader";
 import MintTokens from "@/source/components/token-program/MintTokens";
 import ProgramInfo from "@/source/components/token-program/ProgramInfo";
+import TransferTokens from "@/source/components/token-program/TransferTokens";
 import { shortenWalletAddress } from "@/source/controllers/SpecialCtrl";
 import { findOrCreateAssociatedTokenAccountTransaction, getAcountTokensBalance, getTokenAccountWithMint } from "@/source/controllers/web3.helpers";
 import { getMint, Mint } from "@solana/spl-token";
@@ -11,7 +13,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey, TokenAmount } from "@solana/web3.js";
 import { useEffect, useRef, useState } from "react";
 
-type stageType = "init" | "create-mint" | "create-token-account" | "mint-tokens" | "approve-delegate" | "transfer-tokens" | "revoke-delegate" | "burn" | "connect-wallet"
+type stageType = "init" | "create-mint" | "create-token-account" | "mint-tokens" | "transfer-tokens" | "burn" | "connect-wallet"
 
 export default function Home() {
   const { connection } = useConnection()
@@ -88,7 +90,9 @@ export default function Home() {
         </div>}
         {stage === "create-mint" && <CreateMint saveMint={saveMint} />}
         {stage === "create-token-account" && <CreateTokenAccount mint={mint} saveTokenAddress={saveTokenAddress} />}
-        {stage === "mint-tokens" && <MintTokens mint={mint} />}
+        {stage === "mint-tokens" && <MintTokens mint={mint} goToBurn={() => setStage("burn")} goToTransfer={() => setStage("transfer-tokens")} />}
+        {stage === "transfer-tokens" && <TransferTokens mint={mint} goToBurn={() => setStage("burn")} goToMint={() => setStage("mint-tokens")} userTokenAccount={associatedTokenAddress} />}
+        {stage === "burn" && <BurnTokens mint={mint} goToTransfer={() => setStage("transfer-tokens")} goToMint={() => setStage("mint-tokens")} />}
       </div>
       <button onClick={() => setShowProgramInfo(true)} className="bg-[#9514ff] text-xs text-white px-2 py-1 rounded-md flex items-center shake">Program Info</button>
       {showProgramInfo && <ProgramInfo mint={mint} hideProgramInfo={() => setShowProgramInfo(false)} saveMint={saveMint} associatedTokenAddress={associatedTokenAddress} tbs={tbs} />}

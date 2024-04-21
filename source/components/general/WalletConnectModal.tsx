@@ -27,6 +27,7 @@ const WalletConnectModal = () => {
           {wallets.filter(w => w.readyState !== "NotDetected").map(wallet => {
             const connectWallet = async () => {
               try {
+                wallet.adapter.on("readyStateChange", x => console.log(x))
                 setWalletIsConnecting(wallet.adapter.name)
                 await select(wallet.adapter.name)
                 await wallet.adapter.connect();

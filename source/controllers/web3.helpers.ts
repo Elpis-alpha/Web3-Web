@@ -66,3 +66,35 @@ export const getAcountTokensBalance = async ({ connection, publicKey }: { connec
   const tokenAccount = await connection.getTokenAccountBalance(publicKey)
   return tokenAccount.value
 }
+
+type transferTokensType = {
+  source: web3.PublicKey, destination: web3.PublicKey, owner: web3.PublicKey, amount: number
+}
+export const transferTokensTransaction = async ({ amount, destination, owner, source }: transferTokensType) => {
+  const transaction = new web3.Transaction().add(
+    token.createTransferInstruction(
+      source,
+      destination,
+      owner,
+      amount,
+    )
+  )
+
+  return transaction
+}
+
+type burnTokensType = {
+  account: web3.PublicKey, mint: web3.PublicKey, owner: web3.PublicKey, amount: number
+}
+export const burnTokensTransaction = async ({ amount, owner, account, mint }: burnTokensType) => {
+  const transaction = new web3.Transaction().add(
+    token.createBurnInstruction(
+      account,
+      mint,
+      owner,
+      amount
+    )
+  )
+
+  return transaction
+}
